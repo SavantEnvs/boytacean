@@ -1,0 +1,29 @@
+# Additive known-answer-test (KAT) probe for the Mayhem behavioral oracle.
+# A tiny standalone binary that hand-encodes a canonical Game Boy ROM header,
+# feeds it to the UNMODIFIED boytacean cartridge loader, and prints the decoded
+# fields. mayhem/test.sh greps the printed values against fixed expected values,
+# so a neutered/broken loader makes the oracle FAIL (anti-reward-hacking).
+#
+# Standalone [workspace] table keeps it out of the upstream root workspace. The
+# boytacean dependency enables only `gen-mock` (no-op build.rs, static build
+# metadata — no emulation logic changes); see mayhem/fuzz/Cargo.toml.
+[package]
+name = "boytacean-kat"
+version = "0.0.0"
+publish = false
+edition = "2021"
+
+[dependencies.boytacean]
+path = "../.."
+default-features = false
+features = ["gen-mock"]
+
+[workspace]
+members = ["."]
+
+[[bin]]
+name = "rom_kat"
+path = "src/main.rs"
+
+[profile.release]
+debug = false

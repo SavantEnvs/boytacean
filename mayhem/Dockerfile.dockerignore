@@ -1,0 +1,7 @@
+# BuildKit uses <dockerfile>.dockerignore in preference to the context-root one for
+# `docker build -f mayhem/Dockerfile .`. Keep .git (the grader/PATCH tier need full
+# history) and prune only heavy build-artifact trees.
+mayhem/fuzz/target
+mayhem/kat/target
+target
+frontends/*/target

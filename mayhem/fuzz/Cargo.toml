@@ -1,0 +1,43 @@
+# Additive cargo-fuzz crate for the Mayhem integration. Lives under mayhem/fuzz/
+# and is NEVER part of the upstream workspace. It depends on the UNMODIFIED
+# boytacean crate at the repo root and drives its Game Boy ROM/cartridge loader
+# and (bounded) emulation loop. The standalone [workspace] table keeps this crate
+# out of the root workspace's resolution so nothing upstream is touched.
+#
+# The boytacean dependency enables ONLY the `gen-mock` feature: that turns the
+# upstream build.rs into a no-op (it otherwise writes generated files and uses the
+# `built` crate's cargo-lock reader, which can't find a lockfile when boytacean is
+# a path dependency of this separate workspace). gen-mock swaps the build-metadata
+# constants for static mocks and does NOT change any emulation logic.
+[package]
+name = "boytacean-mayhem-fuzz"
+version = "0.0.0"
+publish = false
+edition = "2021"
+
+[package.metadata]
+cargo-fuzz = true
+
+[dependencies]
+libfuzzer-sys = "0.4"
+
+[dependencies.boytacean]
+path = "../.."
+default-features = false
+features = ["gen-mock"]
+
+# Keep this crate out of the upstream root crate's workspace resolution.
+[workspace]
+members = ["."]
+
+[[bin]]
+name = "fuzz-cartridge"
+path = "fuzz_targets/fuzz-cartridge.rs"
+test = false
+doc = false
+
+[[bin]]
+name = "fuzz-run"
+path = "fuzz_targets/fuzz-run.rs"
+test = false
+doc = false
