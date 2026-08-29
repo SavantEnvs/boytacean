@@ -1,0 +1,3 @@
+# cargo/cargo-fuzz build artifacts for the additive mayhem crates — never commit.
+fuzz/target/
+kat/target/

@@ -1,0 +1,15 @@
+# boytacean in-process libFuzzer target (cargo-fuzz / libfuzzer-sys).
+# Feeds fuzz bytes as a Game Boy ROM to boytacean::rom::Cartridge::from_data, which
+# decodes the cartridge header (title, CGB/SGB flags, MBC/ROM/RAM types) and the MBC
+# bank-mapping read handler.
+project: savantenvs/boytacean
+target: fuzz-cartridge
+image: savantenvs/boytacean:latest
+
+cmds:
+  - cmd: /mayhem/fuzz-cartridge
+    libfuzzer: true
+
+testsuite:
+  - https://$MAYHEM_DOMAIN/$MAYHEM_PROJECT/$MAYHEM_TARGET/testsuite.tar
+  - file://mayhem/fuzz-cartridge/testsuite

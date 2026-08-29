@@ -1,0 +1,15 @@
+# boytacean in-process libFuzzer target (cargo-fuzz / libfuzzer-sys).
+# Loads the fuzz bytes as a Game Boy ROM (GameBoy::load_rom -> Cartridge::from_data)
+# and clocks the emulator a fixed, bounded number of CPU instructions, exercising the
+# CPU, MMU banking, PPU, APU, timer and DMA.
+project: savantenvs/boytacean
+target: fuzz-run
+image: savantenvs/boytacean:latest
+
+cmds:
+  - cmd: /mayhem/fuzz-run
+    libfuzzer: true
+
+testsuite:
+  - https://$MAYHEM_DOMAIN/$MAYHEM_PROJECT/$MAYHEM_TARGET/testsuite.tar
+  - file://mayhem/fuzz-run/testsuite
